@@ -3,6 +3,7 @@
 !/.gitignore
 !/.gitattributes
 !/README.md
+!/README.fa.md
 !/install.sh
 !/restore.sh
 !/configure.py

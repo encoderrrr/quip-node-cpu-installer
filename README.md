@@ -1,88 +1,75 @@
-# نصب نود کویپ با پردازنده
+<div align="center">
 
-این بسته فقط برای نصب نود جدید با پردازنده روی شبکهٔ آگلایس است. هنگام نصب، دامنه و تنظیمات خودتان را وارد می‌کنید. هر نصب هویت مستقل می‌سازد؛ هیچ کلید، اطلاعات سرور یا نسخهٔ پشتیبان شخصی همراه بسته نیست.
+**English** | [فارسی](README.fa.md)
 
-## پیش‌نیازها
+</div>
 
-- سرور اوبونتو یا دبیان با معماری ۶۴ بیتی اینتل یا ای‌ام‌دی و دسترسی مدیریتی.
-- موتور داکر و افزونهٔ کامپوز نسخهٔ دوم باید نصب باشند.
-- دامنه باید مستقیم به نشانی سرور اشاره کند. دامنهٔ داک‌دی‌ان‌اس هم مناسب است. پراکسی کلادفلر را خاموش و رکورد نسخهٔ ششم نامعتبر را حذف کنید.
-- پورت‌های زیر را در فایروال سرور و پنل ارائه‌دهنده باز کنید؛ اسکریپت فایروال یا اتصال مدیریتی را تغییر نمی‌دهد.
+# Quip CPU Node Installer
+
+Interactive installer for a new CPU-based Quip node on Aglais. This repository contains only public scripts and documentation. Each installation creates its own identity.
+
+## Requirements
+
+- Ubuntu or Debian x86_64 with sudo access.
+- Docker Engine and Docker Compose v2.
+- A DNS hostname pointing directly to the server. DuckDNS works. Disable the Cloudflare proxy and remove an invalid AAAA record.
+- Open these ports in the provider and server firewalls:
 
 ```text
 TCP: 80, 443, 20049, 30333
 UDP: 30333
 ```
 
-داده‌های تاریخی زنجیره نگهداری می‌شوند و مصرف دیسک رشد می‌کند. حداقل دو گیبی‌بایت حافظه خارج از سقف ماینر باقی بگذارید؛ کفایت واقعی به شبکه و سرویس‌های دیگر وابسته است. در صورت وجود نصب قبلی، فضای ذخیره‌سازی مرتبط یا پورت اشغال‌شده، نصب متوقف می‌شود و چیزی پاک نمی‌شود.
+Archive mode is enabled, so disk usage grows over time. Keep at least 2 GiB of RAM outside the miner limit. The installer stops without deleting anything if it detects an existing Quip installation, conflicting volumes, or occupied ports.
 
-## آماده‌سازی و اجرا
+## Prepare the server
 
-```text
+```bash
 sudo apt-get update
 sudo apt-get install -y git python3 curl iproute2 ca-certificates
 ```
 
-داکر را مطابق [راهنمای رسمی اوبونتو](https://docs.docker.com/engine/install/ubuntu/) یا [راهنمای رسمی دبیان](https://docs.docker.com/engine/install/debian/) نصب و بررسی کنید:
+Install Docker using its official [Ubuntu guide](https://docs.docker.com/engine/install/ubuntu/) or [Debian guide](https://docs.docker.com/engine/install/debian/), then verify:
 
-```text
+```bash
 sudo docker info
 sudo docker compose version
 ```
 
-فایل‌های عمومی بسته را به سرور کپی کنید، وارد پوشه شوید و دستور زیر را اجرا کنید. پس از انتشار، دریافت از گیت‌هاب هم ممکن می‌شود؛ فعلاً نشانی انتشار وجود ندارد.
+## Install a new node
 
-```text
+Clone this repository, enter its directory, and run:
+
+```bash
 sudo bash install.sh
 ```
 
-## پرسش‌های نصب
+The installer asks for the domain, certificate email, node moniker, optional public EVM points address, CPU core count, memory limit, descriptor port, and confirmation that DNS and firewall rules are ready. Enter only a public address, never a private key.
 
-پرسش‌های ترمینال انگلیسی هستند تا در ترمینال‌های فاقد پشتیبانی فارسی به‌هم نریزند. ترتیب و معنی آن‌ها:
-
-- دامنه: بدون پیشوند وب، مسیر یا پورت.
-- ایمیل برای صدور گواهی اتصال امن.
-- نام نود: حداکثر ۳۲ نویسه شامل حروف انگلیسی، عدد، فاصله، نقطه، خط تیره یا زیرخط.
-- نشانی عمومی حساب امتیازات: اختیاری؛ با زدن کلید ورود می‌توانید رد کنید. کلید خصوصی وارد نکنید.
-- تعداد هسته‌های ماینر: پیش‌فرض دو؛ برای سرور تک‌هسته‌ای عدد یک وارد کنید.
-- سقف حافظه برحسب گیبی‌بایت: پیش‌فرض چهار.
-- پورت معرفی عمومی: پیش‌فرض ۲۰۰۴۹؛ انتخاب ۴۴۳ هم مجاز است.
-- تأیید آماده بودن دامنه و فایروال با پاسخ مثبت انگلیسی.
-
-قالب نام پس از افزودن نشانی امتیازات:
+With a points address, the node name uses:
 
 ```text
 moniker - 0x...
 ```
 
-پاسخ مثبت برای ادامه:
+This naming format alone does not guarantee points.
 
-```text
-yes
-```
+## Configured services
 
-قالب نام به‌تنهایی دریافت امتیاز را تضمین نمی‌کند؛ مقررات حساب امتیازات پروژه نیز باید رعایت شود.
+The installer enables CPU mining, validator, dashboard, telemetry API, public safe RPC, and automatic TLS through Caddy. HTTPS is served on ports 443 and 20049.
 
-## قابلیت‌های فعال
+Descriptor fields:
 
-- ماینر پردازنده با تعداد هسته و سقف حافظهٔ انتخابی.
-- داشبورد، رابط آمار استخراج و ارتباط عمومی با زنجیره از طریق روش‌های امن نسخهٔ رسمی.
-- تنظیم دامنه، نام و پورت در اطلاعات معرفی نود.
-- صدور خودکار گواهی توسط کدی با صادرکنندهٔ پیش‌فرض لتس‌انکریپت و رفتار جایگزین کدی.
-- ارائهٔ اتصال امن روی هر دو پورت ۴۴۳ و ۲۰۰۴۹، مستقل از پورت معرفی.
-
-نام دقیق گزینه‌های معرفی نود:
-
-```text
+```toml
 public_host = "YOUR_DOMAIN"
 public_port = 20049
 node_name = "YOUR_NODE_NAME"
 auto_mine = true
 ```
 
-گزینهٔ آخر فقط اطلاعات معرفی استخراج خودکار است؛ استخراج واقعی پس از اجرای ماینر و پایان همگام‌سازی شروع می‌شود.
+`auto_mine` is descriptor metadata. Mining starts after the validator finishes syncing and the miner runs.
 
-نشانی‌های داشبورد، ارتباط با زنجیره و آمار، به‌ترتیب:
+Public endpoints:
 
 ```text
 https://YOUR_DOMAIN/
@@ -90,17 +77,11 @@ https://YOUR_DOMAIN/rpc
 https://YOUR_DOMAIN/api/v1/status
 ```
 
-## وضعیت و مدیریت
+## Status and management
 
-داده‌ها جدا از بستهٔ عمومی در مسیر زیر ساخته می‌شوند:
+Runtime files are stored at `/opt/quip-node`, separately from this installer.
 
-```text
-/opt/quip-node
-```
-
-همگام‌سازی اولیه ممکن است ساعت‌ها طول بکشد. ماینر و داشبورد منتظر آماده‌شدن نود زنجیره می‌مانند. اگر شروع سرویس‌ها با پایان مهلت متوقف شد، داده‌ها را پاک نکنید؛ وضعیت را بررسی و پس از همگام‌سازی، شروع را تکرار کنید.
-
-```text
+```bash
 cd /opt/quip-node
 sudo docker compose ps -a
 sudo docker compose logs --tail 100 quip-validator
@@ -108,101 +89,67 @@ sudo docker compose logs --tail 100 cpu
 sudo bash check.sh
 ```
 
-شروع یا تکمیل راه‌اندازی:
+Initial archive sync can take hours. Start or continue the stack with:
 
-```text
+```bash
 sudo docker compose up -d
 ```
 
-توقف و ادامهٔ ماینر بدون حذف اطلاعات:
+Stop or resume only the miner:
 
-```text
+```bash
 sudo docker compose stop cpu
 sudo docker compose start cpu
 ```
 
-اجرای دوباره پس از روشن‌شدن سرور به فعال بودن داکر وابسته است. سرویسی که خودتان متوقف کرده‌اید ممکن است تا اجرای دستور شروع، خاموش بماند.
+Investigate `reachable: false`, `isSyncing: true`, or RPC errors. TCP checks do not prove UDP 30333 is open.
 
-اسکریپت بررسی وضعیت اتصال امن و پورت‌ها را نشان می‌دهد. پاسخ‌های زیر نیازمند بررسی‌اند:
+## Change CPU count
 
-```text
-reachable: false
-isSyncing: true
-RPC error
-```
-
-تست اتصال‌گرا باز بودن پورت دیتاگرام را ثابت نمی‌کند؛ آن را جداگانه بررسی کنید. صدور گواهی به دامنه و پورت‌های سالم وابسته است. نشانی‌های عمومی را از دستگاه دیگری هم بررسی کنید.
-
-## تغییر تعداد هسته‌ها
-
-محدودهٔ هسته‌های کانتینر و تعداد هسته‌های ماینر را هم‌زمان تغییر دهید. نمونهٔ هشت هسته:
+Example for 8 cores:
 
 ```text
-# File: /opt/quip-node/.env
+# /opt/quip-node/.env
 QUIP_MINER_CPUSET='0-7'
 
-# File: /opt/quip-node/data/config.toml
+# /opt/quip-node/data/config.toml
 [cpu]
 num_cpus = 8
 ```
 
-در فایل دوم مقدار موجود را ویرایش کنید؛ بخش تکراری نسازید. سپس:
+Then recreate the miner:
 
-```text
+```bash
 cd /opt/quip-node
 sudo docker compose up -d --force-recreate cpu
 ```
 
-تغییر دامنه یا پورت معرفی به راه‌اندازی مجدد ماینر نیاز دارد. تغییر دامنهٔ اتصال امن، اصلاح تنظیمات و بازسازی کدی را هم لازم دارد.
+## Restore an existing node
 
-## نسخه و آزمون
+Use a fresh destination server and a backup in the expected format.
 
-فایل‌های رسمی روی شناسهٔ بررسی‌شدهٔ زیر ثابت‌اند، اما برچسب تصاویر بتا می‌تواند تغییر کند؛ ثابت بودن فایل‌ها به معنی ثابت بودن همهٔ باینری‌ها نیست.
-
-```text
-1c24f20a42bf67cf959cd919e276c22209f2400a
-CHANNEL=beta
-```
-
-آزمون ساخت تنظیمات و نگارش اسکریپت جای نصب واقعی روی سرور تازه را نمی‌گیرد. صدور گواهی و ثبت ماینر به سرویس‌های زنده وابسته‌اند. آزمون پایتون به نسخهٔ ۳٫۱۱ یا جدیدتر نیاز دارد:
-
-```text
-bash -n install.sh restore.sh check.sh
-python3 -m unittest -v test_configure.py
-```
-
-## هویت و انتشار عمومی
-
-### بازیابی سادهٔ نود قبلی
-
-این روش برای سرور جدید و بکاپ ساخته‌شده با همین قالب است. بکاپ باید فایل هویت ماینر و هویت شبکهٔ نود را داشته باشد.
-
-**۱. روی سرور قدیمی، نود را متوقف کنید:**
+1. Stop the old node:
 
 ```bash
 cd /opt/quip-node
 sudo docker compose stop
 ```
 
-یک هویت را هم‌زمان روی دو سرور اجرا نکنید. اگر برنامه‌ای نود قدیمی را خودکار روشن می‌کند، آن را هم غیرفعال کنید.
-
-**۲. بکاپ را از کامپیوتر خودتان به سرور جدید بفرستید:**
+2. Copy the backup privately:
 
 ```bash
 scp node-backup.tar.gz USER@NEW_SERVER:~/node-backup.tar.gz
 ```
 
-نام فایل، کاربر و نشانی نمونه را با اطلاعات خودتان عوض کنید. بکاپ را روی گیت‌هاب نگذارید.
-
-**۳. روی سرور جدید، پیش‌نیازهای بخش نصب را آماده کنید. سپس داخل پوشهٔ این بسته فقط این دستور را اجرا کنید:**
+3. Prepare the requirements, clone this repository, and run:
 
 ```bash
 sudo bash restore.sh "$HOME/node-backup.tar.gz"
 ```
 
-اسکریپت اطلاعات سرور جدید را می‌پرسد، بکاپ را بررسی می‌کند، هویت قبلی را برمی‌گرداند و نود را راه می‌اندازد. تنظیمات دامنه و تعداد هسته از پاسخ‌های جدید ساخته می‌شوند. اگر روی مقصد نصب یا هویت دیگری وجود داشته باشد، اسکریپت بدون بازنویسی متوقف می‌شود.
+The script validates the archive, asks for the new server settings, restores both identities, and starts the node. It refuses to overwrite an existing identity.
 
-**۴. پس از پایان همگام‌سازی، وضعیت را بررسی کنید:**
+4. After sync, verify:
 
 ```bash
 cd /opt/quip-node
@@ -210,16 +157,31 @@ sudo bash check.sh
 sudo docker compose logs --tail 100 cpu
 ```
 
-نشانی زندهٔ ماینر را با نشانی نود قبلی در همان شبکه مقایسه کنید. بکاپ اصلی را تا تأیید کامل بازیابی، خصوصی نگه دارید.
+Compare the live miner address with the old node on the same network. Keep the original archive private until restoration is confirmed.
 
-### فایل‌های مجاز برای انتشار
+## Version and tests
 
-بازیابی طبق مراحل بالا به‌صورت دستی و خصوصی است؛ نصب‌کننده بکاپی دریافت یا منتشر نمی‌کند. کلیدها، داده‌ها و گزارش‌های سرور را منتشر نکنید.
+The upstream checkout is pinned to:
 
-فقط پوشهٔ همین بسته را عمومی کنید؛ پوشهٔ والد و مسیر اجرایی سرور را وارد مخزن نکنید. فایل نادیده‌گیری فقط این هشت فایل را مجاز می‌کند:
+```text
+1c24f20a42bf67cf959cd919e276c22209f2400a
+CHANNEL=beta
+```
+
+The source commit is fixed, but beta image tags can move.
+
+```bash
+bash -n install.sh restore.sh check.sh
+python3 -m unittest -v test_configure.py
+```
+
+Python 3.11 or newer is required for unit tests.
+
+## Public repository files
 
 ```text
 README.md
+README.fa.md
 install.sh
 restore.sh
 configure.py
@@ -229,6 +191,4 @@ test_configure.py
 .gitattributes
 ```
 
-پیش از انتشار تغییرات آماده‌شده را بازبینی کنید و فایل‌ها را به‌اجبار اضافه نکنید. هیچ تنظیمات تولیدشده، کلید، نسخهٔ پشتیبان یا مشخصات واقعی سرور نباید منتشر شود.
-
-منبع: [مخزن رسمی راه‌اندازی نود کویپ](https://github.com/QuipNetwork/nodes.quip.network).
+Source: [official Quip node deployment](https://github.com/QuipNetwork/nodes.quip.network).

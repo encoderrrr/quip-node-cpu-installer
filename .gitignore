@@ -1,0 +1,10 @@
+# Public repository: deny everything unless explicitly allowed.
+*
+!/.gitignore
+!/.gitattributes
+!/README.md
+!/install.sh
+!/restore.sh
+!/configure.py
+!/check.sh
+!/test_configure.py

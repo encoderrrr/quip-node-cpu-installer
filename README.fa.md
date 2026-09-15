@@ -36,9 +36,11 @@ sudo docker info
 sudo docker compose version
 ```
 
-فایل‌های عمومی بسته را به سرور کپی کنید، وارد پوشه شوید و دستور زیر را اجرا کنید. پس از انتشار، دریافت از گیت‌هاب هم ممکن می‌شود؛ فعلاً نشانی انتشار وجود ندارد.
+مخزن را از گیت‌هاب دریافت کنید، وارد پوشه شوید و نصب را اجرا کنید:
 
-```text
+```bash
+git clone https://github.com/encoderrrr/quip-node-cpu-installer.git
+cd quip-node-cpu-installer
 sudo bash install.sh
 ```
 

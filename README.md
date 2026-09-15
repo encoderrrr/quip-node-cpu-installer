@@ -41,6 +41,8 @@ sudo docker compose version
 Clone this repository, enter its directory, and run:
 
 ```bash
+git clone https://github.com/encoderrrr/quip-node-cpu-installer.git
+cd quip-node-cpu-installer
 sudo bash install.sh
 ```
 

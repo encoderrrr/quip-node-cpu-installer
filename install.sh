@@ -4,7 +4,7 @@ set -Eeuo pipefail
 umask 077
 SOURCE_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
 UPSTREAM=https://github.com/QuipNetwork/nodes.quip.network.git
-REVISION=1c24f20a42bf67cf959cd919e276c22209f2400a
+REVISION=62083da02a79b6e087149504d11f220af2a05400
 ROOT=/opt/quip-node
 die() { printf 'ERROR: %s\n' "$*" >&2; exit 1; }
 trap 'printf "Stopped at line %s. Runtime files are retained; no automatic deletion.\n" "$LINENO" >&2' ERR

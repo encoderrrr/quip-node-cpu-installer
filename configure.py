@@ -4,7 +4,6 @@ import argparse
 import json
 import pathlib
 import re
-import secrets
 
 def render(root, domain, email, name, address, profile, cpus, memory, port):
     if not re.fullmatch(r'(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}', domain):
@@ -24,7 +23,7 @@ def render(root, domain, email, name, address, profile, cpus, memory, port):
     env = dict(CHANNEL='beta', COMPOSE_PROFILES=profile, PUID='1000', PGID='1000',
                QUIP_HOSTNAME=f'{domain}, {domain}:20049', CERT_EMAIL=email,
                VALIDATOR_NAME=node_name, QUIP_MINER_CPUSET='0' if cpus == 1 else f'0-{cpus-1}',
-               QUIP_MINER_MEM_LIMIT=f'{memory}g', POSTGRES_PASSWORD=secrets.token_hex(24))
+               QUIP_MINER_MEM_LIMIT=f'{memory}g')
     miner = f'''[miner]
 validators = ["ws://quip-validator:9944"]
 faucet_url = "https://faucet.aglais.quip.network"

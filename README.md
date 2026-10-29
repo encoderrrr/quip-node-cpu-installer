@@ -6,7 +6,7 @@
 
 # Quip CPU Node Installer
 
-Interactive installer for a new CPU-based Quip node on Aglais. This repository contains only public scripts and documentation. Each installation creates its own identity.
+Interactive installer for a new CPU-based Quip node on the Aglais spec-119 relaunch. This repository contains only public scripts and documentation. Each installation creates its own identity. This installer is for fresh servers, not for upgrading a running node.
 
 ## Requirements
 
@@ -20,7 +20,7 @@ TCP: 80, 443, 20049, 30333
 UDP: 30333
 ```
 
-Archive mode is enabled, so disk usage grows over time. Keep at least 2 GiB of RAM outside the miner limit. The installer stops without deleting anything if it detects an existing Quip installation, conflicting volumes, or occupied ports.
+Archive mode is enabled, so disk usage grows over time. Keep at least 2 GiB of RAM outside the miner limit. The installer stops without deleting anything if it detects an existing Quip installation, conflicting volumes, or occupied ports. The current upstream stack uses the spec-119 chain database and dashboard index; old chain data must not be reused for this genesis.
 
 ## Prepare the server
 
@@ -91,7 +91,7 @@ sudo docker compose logs --tail 100 cpu
 sudo bash check.sh
 ```
 
-Initial archive sync can take hours. Start or continue the stack with:
+Initial archive sync can take hours. The dashboard may appear before the validator and miner are ready. Start or continue the stack with:
 
 ```bash
 sudo docker compose up -d
@@ -161,16 +161,20 @@ sudo docker compose logs --tail 100 cpu
 
 Compare the live miner address with the old node on the same network. Keep the original archive private until restoration is confirmed.
 
+## Existing running nodes
+
+Do not rerun `install.sh` or `restore.sh` over a running node. This repository only prepares fresh installations. To upgrade an existing node across the Aglais spec-119 reset, preserve its identity and follow the [upstream relaunch instructions](https://github.com/QuipNetwork/nodes.quip.network#aglais-relaunch-spec-119). The upstream stack uses `data/aglais-119-chain-db` and `dashboard-data-119` for the new genesis. Verify the new node before considering removal of old chain data.
+
 ## Version and tests
 
 The upstream checkout is pinned to:
 
 ```text
-1c24f20a42bf67cf959cd919e276c22209f2400a
+62083da02a79b6e087149504d11f220af2a05400
 CHANNEL=beta
 ```
 
-The source commit is fixed, but beta image tags can move.
+The source commit is fixed at the official spec-119 relaunch, but beta image tags can move. Recheck the [official upstream repository](https://github.com/QuipNetwork/nodes.quip.network) and [Node Manager releases](https://gitlab.com/quip.network/quip-node-manager/-/releases) before each new deployment.
 
 ```bash
 bash -n install.sh restore.sh check.sh
